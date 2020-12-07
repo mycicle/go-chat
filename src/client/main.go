@@ -16,6 +16,7 @@ import (
 // https://medium.com/@johnshenk77/create-a-simple-chat-application-in-go-using-websocket-d2cb387db836
 
 type Message struct {
+	From string `json:"from"`
 	Text string `json:"text"`
 }
 
@@ -27,8 +28,8 @@ var (
 // this is where you would add TLS on the client to keep eavesdroppers
 // out of the chat
 
-func connect() (*websocket.Conn, error) {
-	return websocket.Dial(fmt.Sprintf("ws://localhost:%s", *port), "", mockedIP())
+func connect(ip string) (*websocket.Conn, error) {
+	return websocket.Dial(fmt.Sprintf("ws://localhost:%s", *port), "", ip)
 }
 
 // if we are running it locally we have to differentiate the clients and cant use localhost as the 3rd parameter
@@ -47,8 +48,10 @@ func mockedIP() string {
 func main() {
 	flag.Parse()
 
+
+	ip := mockedIP()
 	// connect
-	ws, err := connect()
+	ws, err := connect(ip)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -63,7 +66,7 @@ func main() {
 				fmt.Println("Error receiving message: ", err.Error())
 				break
 			}
-			fmt.Println("Message: ", m)
+			fmt.Println("From: ", m.From , " : ", m.Text)
 		}
 	}()
 
@@ -75,6 +78,7 @@ func main() {
 			continue
 		}
 		m := Message{
+			From: ip,
 			Text: text,
 		}
 		err = websocket.JSON.Send(ws, m)

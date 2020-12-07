@@ -14,6 +14,7 @@ import (
 
 // Message type
 type Message struct {
+	From string `json:"from"`
 	Text string `json:"text"`
 }
 
@@ -59,7 +60,7 @@ func handler(ws *websocket.Conn, h *hub) {
 		var m Message
 		err := websocket.JSON.Receive(ws, &m)
 		if err != nil {
-			h.broadcastChan <- Message{err.Error()}
+			h.broadcastChan <- Message{"server", err.Error()}
 			h.removeClient(ws)
 			return
 		}
