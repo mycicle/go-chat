@@ -9,7 +9,7 @@ import (
 	"golang.org/x/net/websocket"
 )
 
-// source
+// reference for how to use Go
 // https://medium.com/@johnshenk77/create-a-simple-chat-application-in-go-using-websocket-d2cb387db836
 
 // Message type
